@@ -1,0 +1,40 @@
+include ./partials/_head.pug
+
+body
+	.main_img_box
+		header
+			.container-fluid
+				if !currentUser 
+					.login_box
+						h1 login
+						form(method="POST", action="/login")
+							ul.list
+								li 
+									input(type="text", name="email", placeholder="Email...")
+								li 
+									input(type="password", name="password", placeholder="Password...")
+								li 
+									button Login
+				if currentUser
+					.login_box
+						a(href="/logout") logout
+
+
+				//- ul.user_nav
+				//- 	if !currentUser 
+				//- 		li
+				//- 			a(href="/login") login
+				//- 	if currentUser
+				//- 		li
+				//- 			a(href="/profile") My Profile
+				//- 		li
+				//- 			a(href="/logout") logout
+
+
+	block content
+
+	footer
+		p Website 2016 All Rights Reserved
+
+	script(src='/static/js/jquery-3.1.1.min.js')
+	script(src='/static/js/main.js')
