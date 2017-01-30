@@ -62,4 +62,4 @@ app.use('/admin', admin_routes);
 var api_routes = require('./routes/api.js');
 app.use('/admin/api', api_routes);
 
-app.listen(3000);
+app.listen(process.env.PORT || 3000);
