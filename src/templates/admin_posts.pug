@@ -24,9 +24,17 @@ block content
 	ul.list.entity_list#post_list
 		each post in posts
 			li
-				a(href=`/admin/posts/${post._id}`) #{post.title}
-				ul.list.operations
-					li
-						span.delete.delbtn(data-postid=`${post._id}`) Delete
-					li
-						a(href=`/admin/posts/${post._id}`) Edit
+				.imgBox
+					img(src=`${post.feat_img}` )
+				a(href=`/admin/posts/single/${post._id}`) #{post.title}
+
+
+	//- ul.list.entity_list#post_list
+	//- 	each post in posts
+	//- 		li
+	//- 			a(href=`/admin/posts/${post._id}`) #{post.title}
+	//- 			ul.list.operations
+	//- 				li
+	//- 					span.delete.delbtn(data-postid=`${post._id}`) Delete
+	//- 				li
+	//- 					a(href=`/admin/posts/${post._id}`) Edit

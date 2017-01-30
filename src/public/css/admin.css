@@ -281,6 +281,23 @@ header .list li a {
     cursor: pointer;
 }
 
+#post_list li {
+    width: 31%;
+    float: left;
+    margin-right: 2%;
+    margin-bottom: 20px;
+    padding: 10px;
+}
+
+#post_list li .imgBox {
+    height: 250px;
+    overflow: hidden;
+}
+
+/*#post_list li .imgBox {
+    
+}*/
+
 .addcatbox {
     border: solid 2px#7081ab;
     padding: 15px;
