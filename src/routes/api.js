@@ -645,4 +645,20 @@ api.post('/upload/:subfolder', mid.requiresLogin, function(req, res, next){
     });
 });
 
+api.get('/get_industries', function(req, res, next){
+
+    Industry.find({}).exec(function(err, industries){
+
+        // console.log(industries);
+
+        if(err){
+            res.send(err);
+        }else{
+            res.send(industries);
+        }
+
+    });
+
+});
+
 module.exports = api;
