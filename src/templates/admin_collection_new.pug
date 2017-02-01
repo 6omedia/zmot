@@ -1,0 +1,27 @@
+extends admin_layout
+
+block content
+	//- #datablock(style="display: none", data-userid=`${user._id}`)
+
+	h1 Create a New Collection
+	.form.postForm
+		.row
+			.col-sm-8
+				ul.list.postformList
+					li
+						h3 Collection Name
+						input(type="text", id="q_title")
+					li 
+						h3 Description
+						textarea#q_description
+				//- .collectionPostsCont
+				//- 	h3 Posts
+				//- 	input(type="text")#posts_search
+				//- 	span#add_collection_post +
+				//- 	ul.list#collectionPostList
+			.col-sm-4
+
+		p.btn(href="", id="send_btn") Submit
+		img#spin(src="/static/img/spin.gif")
+		#error_box
+		#successBox

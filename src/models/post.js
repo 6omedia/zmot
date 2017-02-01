@@ -19,6 +19,7 @@ var PostsSchema = new mongoose.Schema(
 		outcomes: Array,
 		elements: Array,
 		publishers: Array,
+		collections: Array,
 		feat_img: String,
 		date: Date
 	}

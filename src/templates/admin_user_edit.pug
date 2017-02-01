@@ -47,13 +47,23 @@ block content
 											else
 												input(type="checkbox", value="manage_users", id="perm2")
 										label(for="perm2") Manage Users
+									li
+										if edUser.permissions[0].manage_collections !== 'undefined'
+											if edUser.permissions[0].manage_collections
+												input(type="checkbox", value="manage_collections", id="perm3", checked)
+											else
+												input(type="checkbox", value="manage_collections"  id="perm3") 
+										label(for="perm3") Manage Collections
 								else
 									li
-										input(type="checkbox", value="manage_posts", id="perm1") 
+										input(type="checkbox", value="manage_posts")#perm1 
 										label(for="perm1") Manage Posts
 									li
-										input(type="checkbox", value="manage_users", id="perm2")
+										input(type="checkbox", value="manage_users")#perm2
 										label(for="perm2") Manage Users
+									li
+										input(type="checkbox", value="manage_collections")#perm3
+										label(for="perm3") Manage collections
 						if edUser.isadmin
 							script.
 								$('#permissionsBox').show();

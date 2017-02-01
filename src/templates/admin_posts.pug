@@ -21,12 +21,15 @@ block content
 
 	//- input.filter(id="posts_filter", type="text", placeholder="filter...")
 
+	img(src="/static/img/spin.gif")#postspin
 	ul.list.entity_list#post_list
 		each post in posts
 			li
 				.imgBox
 					img(src=`${post.feat_img}` )
 				a(href=`/admin/posts/single/${post._id}`) #{post.title}
+				a(href=`/admin/posts/${post._id}`) Edit Post
+				span(data-postid=`${post._id}`).delete.delBtn x
 
 
 	//- ul.list.entity_list#post_list

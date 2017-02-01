@@ -1,0 +1,34 @@
+extends admin_layout
+
+block content
+	#datablock(style="display: none", data-collectionid=`${collection._id}`)
+
+	h1 Edit, #{collection.name}
+	a(href=`/admin/collection/single/${collection._id}`) View Collection
+	.form.postForm
+		.row
+			.col-sm-8
+				ul.list.postformList
+					li
+						h3 Collection Name
+						input(type="text", id="q_title", value=`${collection.name}`)
+					li 
+						h3 Description
+						textarea#q_description #{collection.description}
+				//- .collectionPostsCont
+				//- 	h3 Posts
+				//- 	input(type="text")#posts_search
+				//- 	span#add_collection_post +
+				//- 	ul.list#collectionPostList
+				//- 		each post in collection.posts
+				//- 			li(data-post=`${post}`)
+				//- 				span.delBtn -
+				//- 				span #{post}
+							
+			.col-sm-4
+
+		p.btn(href="", id="update_btn") Update
+		p.btn(id="delete_btn") Delete
+		img#spin(src="/static/img/spin.gif")
+		#error_box
+		#successBox

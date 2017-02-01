@@ -19,6 +19,8 @@ function getCheckedTax(tax){
 	let theArray = [];
 	const catlis = $('#' + tax + '_list li input');
 
+	console.log(tax, ' ', catlis);
+
 	catlis.each(function(){
 
 		if($(this).is(':checked')){
@@ -51,6 +53,8 @@ postsForm.sendBtn.on('click', function(){
 		const outArray = getCheckedTax('outcome');
 		const eleArray = getCheckedTax('element');
 		const pubArray = getCheckedTax('publisher');
+
+		const colArray = getCheckedTax('collection');
 
 		const user_id = $('#datablock').data('userid');
 
@@ -109,6 +113,7 @@ postsForm.sendBtn.on('click', function(){
 				outcomes: JSON.stringify(outArray),
 				elements: JSON.stringify(eleArray),
 				publishers: JSON.stringify(pubArray),
+				collections: JSON.stringify(colArray),
 				feat_img: feat_img,
 				user_id: user_id
 			},
@@ -144,7 +149,6 @@ postsForm.sendBtn.on('click', function(){
 // Updateing a post
 
 postsForm.updateBtn.on('click', function(){
-
 	postsForm.updateForm(function(){
 
 		const postid = $('#datablock').data('postid');
@@ -155,6 +159,8 @@ postsForm.updateBtn.on('click', function(){
 		const outArray = getCheckedTax('outcome');
 		const eleArray = getCheckedTax('element');
 		const pubArray = getCheckedTax('publisher');
+
+		const colArray = getCheckedTax('collection');
 
 		let feat_img = '';
 		
@@ -211,6 +217,7 @@ postsForm.updateBtn.on('click', function(){
 				outcomes: JSON.stringify(outArray),
 				elements: JSON.stringify(eleArray),
 				publishers: JSON.stringify(pubArray),
+				collections: JSON.stringify(colArray),
 				feat_img: feat_img
 			},
 			success: function(data)
@@ -257,7 +264,7 @@ $('#delete_btn').on('click', function(){
 
 // Posts Page 
 
-$('.delete').on('click', function(){
+$('#post_list').on('click', '.delete', function(){
 
 	const postid = $(this).data('postid');
 
@@ -446,7 +453,6 @@ $('#remove_img').on('click', function(){
 	imgUploader.resetProgress();
 	$('#upload-input').val('');
 });
-
 
 // Content Type Toggle
 

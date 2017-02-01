@@ -13,7 +13,8 @@ var UserSchema = new mongoose.Schema({
 	isadmin: Boolean,
 	permissions: [{
 		manage_posts: Boolean,
-		manage_users: Boolean
+		manage_users: Boolean,
+		manage_collections: Boolean
 	}]
 });
 

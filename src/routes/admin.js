@@ -3,6 +3,7 @@ var express = require('express');
 var admin = express.Router();
 var User = require('../models/user');
 var Post = require('../models/post');
+var Collection = require('../models/collection');
 //var Category = require('../models/category');
 var Industry = require('../models/industry');
 var Outcome = require('../models/outcome');
@@ -170,16 +171,27 @@ admin.get('/posts/new', mid.requiresLogin, function(req, res, next){
                                                 next(error);
                                             }else{
 
-                                                res.render('admin_posts_new', {
-                                                    title: 'Create New Post',
-                                                    user: user,
-                                                    fullname: user.fullname,
-                                                    industries: industries,
-                                                    outcomes: outcomes,
-                                                    elements: elements,
-                                                    publishers: publishers,
-                                                    user: user, 
-                                                    admin_script: 'posts'
+                                                Collection.find({}).sort({$natural:-1}).exec(function(error, collections){
+
+                                                    if(error){
+                                                        next(error);
+                                                    }else{
+
+                                                        res.render('admin_posts_new', {
+                                                            title: 'Create New Post',
+                                                            user: user,
+                                                            fullname: user.fullname,
+                                                            industries: industries,
+                                                            outcomes: outcomes,
+                                                            elements: elements,
+                                                            publishers: publishers,
+                                                            collections: collections,
+                                                            user: user, 
+                                                            admin_script: 'posts'
+                                                        });
+
+                                                    }
+
                                                 });
                                                 
                                             }
@@ -212,7 +224,7 @@ admin.get('/posts/new', mid.requiresLogin, function(req, res, next){
 function getTaxForPost(post, taxCats, tax_name){
 
     console.log(tax_name);
-    console.log(taxCats);
+    // console.log(taxCats);
 
     let catarray = [];
                                     
@@ -221,8 +233,13 @@ function getTaxForPost(post, taxCats, tax_name){
         let checked = false;
 
         for(let j=0; j<post[tax_name].length; j++){
-            if(taxCats[i]._id == post[tax_name][j]){
+            // console.log('taxCats: ', taxCats[i].name);
+            // console.log('postCats: ', post[tax_name][j]);
+            if(taxCats[i].name == post[tax_name][j]){
+         //       console.log('CHECKED');
                 checked = true;
+            }else{
+         //        console.log('NOT CHECKED');
             }
         }
 
@@ -233,6 +250,8 @@ function getTaxForPost(post, taxCats, tax_name){
         };
         catarray.push(catObj);
     }
+
+//    console.dir(catarray);
 
     return catarray;
 
@@ -291,17 +310,29 @@ admin.get('/posts/:id', mid.requiresLogin, function(req, res, next){
 
                                                                     const pubArray = getTaxForPost(post, publishers, 'publishers');
 
-                                                                    res.render('admin_post_edit', {
-                                                                        title: 'Edit Post',
-                                                                        user: user,
-                                                                        fullname: user.fullname,
-                                                                        post: post,
-                                                                        postid: postid,
-                                                                        industries: indArray,
-                                                                        outcomes: outArray,
-                                                                        elements: eleArray,
-                                                                        publishers: pubArray,
-                                                                        admin_script: 'posts'
+                                                                    Collection.find({}).sort({$natural:-1}).exec(function(error, collections){
+                                                                       
+                                                                        if(error){
+                                                                            next(error);
+                                                                        }else{
+
+                                                                            const colArray = getTaxForPost(post, collections, 'collections');
+
+                                                                            res.render('admin_post_edit', {
+                                                                                title: 'Edit Post',
+                                                                                user: user,
+                                                                                fullname: user.fullname,
+                                                                                post: post,
+                                                                                postid: postid,
+                                                                                industries: indArray,
+                                                                                outcomes: outArray,
+                                                                                elements: eleArray,
+                                                                                publishers: pubArray,
+                                                                                collections: colArray,
+                                                                                admin_script: 'posts'
+                                                                            });
+
+                                                                        }
                                                                     });
                                                                     
                                                                 }
@@ -332,7 +363,7 @@ admin.get('/posts/:id', mid.requiresLogin, function(req, res, next){
 
 	                                //         res.render('admin_post_edit', {
 	                                //             title: 'Edit Post',
-                                 //                user: user,
+                                    //             user: user,
 	                                //             fullname: user.fullname,
 	                                //             post: post,
 	                                //             postid: postid,
@@ -354,6 +385,43 @@ admin.get('/posts/:id', mid.requiresLogin, function(req, res, next){
                     return res.redirect('/');
                 }
 
+            }
+        });
+
+});
+
+admin.get('/posts/single/:id', mid.requiresLogin, function(req, res, next){
+
+    let postid = req.params.id;
+
+    User.findById(req.session.userId)
+        .exec(function(error, user){
+            if(error){
+                next(error);
+            }else{
+                if(user.isadmin){
+
+                    Post.findById(postid).exec(function(err, post){
+
+                        if(err){
+
+                            res.send(err);
+
+                        }else{
+
+                            res.render('admin_single', {
+                                title: 'Admin',
+                                post: post,
+                                user: user,
+                                fullname: user.fullname,
+                                admin_script: 'posts'
+                            }); 
+
+                        }
+    
+                    });
+
+                }
             }
         });
 
@@ -475,5 +543,209 @@ admin.get('/users/:id', mid.requiresLogin, function(req, res, next){
 
 });
 
+admin.get('/collections/new', mid.requiresLogin, function(req, res, next){
+
+     User.findById(req.session.userId)
+        .exec(function(error, user){
+                if(error){
+                    next(error);
+                }else{
+                // check if admin
+                    if(user.isadmin){
+
+                        give_permission(user, 'manage_collections', res, function(){
+
+                            res.render('admin_collection_new', {
+                                title: 'Admin Collections',
+                                user: user,
+                                fullname: user.fullname,
+                                // edUser: edUser,
+                                // userid: userid,
+                                admin_script: 'collections'
+                            });
+
+                        });
+
+                }else{
+                    return res.redirect('/');
+                }
+
+            }
+        });
+
+});
+
+admin.get('/collections', mid.requiresLogin, function(req, res, next){
+
+    User.findById(req.session.userId)
+        .exec(function(error, user){
+                if(error){
+                    next(error);
+                }else{
+                // check if admin
+                    if(user.isadmin){
+
+                        give_permission(user, 'manage_collections', res, function(){
+
+                            Collection.find({}).exec(function(err, collections){
+
+                                if(err){
+                                    res.send(err);
+                                }else{
+
+                                    res.render('admin_collections', {
+                                        title: 'Admin Collections',
+                                        user: user,
+                                        fullname: user.fullname,
+                                        collections: collections,
+                                        // edUser: edUser,
+                                        // userid: userid,
+                                        admin_script: 'collections'
+                                    });
+                                
+                                }
+
+                            });
+
+                            // let userid = req.params.id;
+
+                            // Collection.findOne({"_id": userid}, function(error, edUser){
+
+                            //     if(error){
+                            //         // console.log(error);
+                            //     }else{
+
+                            //         res.render('admin_user_edit', {
+                            //             title: 'Edit User',
+                            //             user: user,
+                            //             fullname: user.fullname,
+                            //             edUser: edUser,
+                            //             userid: userid,
+                            //             admin_script: 'users'
+                            //         });
+
+                            //     }
+
+                            // });
+
+                        });
+
+                }else{
+                    return res.redirect('/');
+                }
+
+            }
+        });
+
+});
+
+admin.get('/collection/:id', mid.requiresLogin, function(req, res, next){
+
+    User.findById(req.session.userId)
+        .exec(function(error, user){
+                if(error){
+                    next(error);
+                }else{
+                // check if admin
+                    if(user.isadmin){
+
+                        give_permission(user, 'manage_collections', res, function(){
+
+                            Collection.findOne({"_id": req.params.id}, function(error, collection){
+
+                                if(error){
+                                    // console.log(error);
+                                }else{
+
+                                    res.render('admin_collection_edit', {
+                                        title: 'Collections',
+                                        user: user,
+                                        fullname: user.fullname,
+                                        // edUser: edUser,
+                                        collection: collection,
+                                        admin_script: 'collections'
+                                    });
+
+                                }
+
+                            });
+
+                        });
+
+                }else{
+                    return res.redirect('/');
+                }
+
+            }
+        });
+
+});
+
+admin.get('/collection/single/:id', mid.requiresLogin, function(req, res, next){
+
+    User.findById(req.session.userId)
+        .exec(function(error, user){
+                if(error){
+                    next(error);
+                }else{
+                // check if admin
+                    if(user.isadmin){
+
+                        give_permission(user, 'manage_collections', res, function(){
+
+                            Collection.findOne({"_id": req.params.id}, function(error, collection){
+
+                                if(error){
+                                    // console.log(error);
+                                }else{
+
+                                //    console.log(collection._id);
+
+                                    Post.find({collections: String(collection.name)}).exec(function(err, posts){
+
+                                        if(err){
+
+                                            console.log(err);
+
+                                        }else{
+
+                                            res.render('admin_collection_single', {
+                                                title: 'Collections',
+                                                user: user,
+                                                fullname: user.fullname,
+                                                posts: posts,
+                                                collection: collection,
+                                                admin_script: 'collections'
+                                            });
+
+                                        }
+
+                                    });
+
+                                    // let posts = [];
+
+                                    // for(let i=0; i<collection.posts.length; i++){
+
+                                    //     Post.find({title: this}).exec(function(err, post){
+                                    //         console.log('yeah: ', post);
+                                    //     });
+
+                                    //     // posts.push()
+                                    // }
+
+                                }
+
+                            });
+
+                        });
+
+                }else{
+                    return res.redirect('/');
+                }
+
+            }
+        });
+
+});
 
 module.exports = admin;

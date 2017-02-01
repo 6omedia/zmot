@@ -24,9 +24,9 @@ app.set('views', __dirname + '/templates');
 mongoose.Promise = global.Promise;
 // mongodb connection
 
-mongoose.connect("mongodb://6omedia:6DMedia89!@ds033259.mlab.com:33259/heroku_pcdrm19z");
+// mongoose.connect("mongodb://6omedia:6DMedia89!@ds033259.mlab.com:33259/heroku_pcdrm19z");
 
-// mongoose.connect("mongodb://localhost:27017/zmot");
+mongoose.connect("mongodb://localhost:27017/zmot");
 
 var db = mongoose.connection;
 

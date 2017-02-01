@@ -3,6 +3,7 @@ extends admin_layout
 block content
 	div(id="datablock", style="display: none", data-postid=`${postid}`)
 	h1 Edit, #{post.title}
+	a(href=`/admin/posts/single/${post._id}`) View Post
 	.form.postForm
 		.row
 			.col-sm-8
@@ -13,6 +14,16 @@ block content
 					li
 						h3 Slug
 						input(type="text", id="q_slug", value=`${post.slug}`)
+					li
+						h3 Collections
+						ul.list#collection_list
+							each collection in collections
+								li
+									if collection.checked
+										input(type="checkbox", value=`${collection.name}`, checked)
+									else
+										input(type="checkbox", value=`${collection.name}`)
+									label #{collection.name}
 					li
 						h3 Post Body
 						.toggleBox
@@ -103,9 +114,9 @@ block content
 					each industry in industries
 						li
 							if industry.checked
-								input(type="checkbox", value=`${industry.id}`, checked)
+								input(type="checkbox", value=`${industry.name}`, checked)
 							else
-								input(type="checkbox", value=`${industry.id}`)
+								input(type="checkbox", value=`${industry.name}`)
 							label #{industry.name}
 							ul.list
 								li
@@ -127,9 +138,9 @@ block content
 					each outcome in outcomes
 						li
 							if outcome.checked
-								input(type="checkbox", value=`${outcome.id}`, checked)
+								input(type="checkbox", value=`${outcome.name}`, checked)
 							else
-								input(type="checkbox", value=`${outcome.id}`)
+								input(type="checkbox", value=`${outcome.name}`)
 							label #{outcome.name}
 							ul.list
 								li
@@ -151,9 +162,9 @@ block content
 					each element in elements
 						li
 							if element.checked
-								input(type="checkbox", value=`${element.id}`, checked)
+								input(type="checkbox", value=`${element.name}`, checked)
 							else
-								input(type="checkbox", value=`${element.id}`)
+								input(type="checkbox", value=`${element.name}`)
 							label #{element.name}
 							ul.list
 								li
@@ -175,9 +186,9 @@ block content
 					each publisher in publishers
 						li
 							if publisher.checked
-								input(type="checkbox", value=`${publisher.id}`, checked)
+								input(type="checkbox", value=`${publisher.name}`, checked)
 							else
-								input(type="checkbox", value=`${publisher.id}`)
+								input(type="checkbox", value=`${publisher.name}`)
 							label #{publisher.name}
 							ul.list
 								li

@@ -1,0 +1,38 @@
+extends admin_layout
+
+block content
+	h1 #{post.title}
+	a(href=`/admin/posts/${post._id}`) Edit
+	br
+	br
+	.row
+		.col-sm-8
+			img(src=`${post.feat_img}`).img_natural
+			if post.body.substring(0, 3) == '[{"'
+				each block in JSON.parse(post.body)
+					case block.blocktype
+						when 'HTML'
+							p !{block.blockvalue}
+						when 'Image'
+							img(src=`${block.blockvalue}`).img_natural
+						default
+							p #{block.blockvalue}
+			else
+				.div !{post.body}
+		.col-sm-4
+			h2 Industries
+			ul.list.taxLis
+				each industry in post.industries
+					li #{industry}
+			h2 Outcomes
+			ul.list.taxLis
+				each outcome in post.outcomes
+					li #{outcome}
+			h2 Elements
+			ul.list.taxLis
+				each element in post.elements
+					li #{element}
+			h2 Publishers
+			ul.list.taxLis
+				each publisher in post.publishers
+					li #{publisher}

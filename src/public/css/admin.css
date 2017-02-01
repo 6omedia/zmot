@@ -38,6 +38,20 @@ label {
     vertical-align: top;
 }
 
+.awesomplete {
+    display: block;
+}
+
+.awesomplete ul {
+    display: block !important;
+    width: 100%;
+}
+
+.awesomplete ul li {
+    display: block !important;
+    width: 100% !important;
+}
+
 /* dry classes */
 
 .delbtn {
@@ -64,6 +78,11 @@ label {
 
 .toggleBox #cb_toggle {
     width: auto;
+}
+
+.img_natural {
+    width: auto;
+    max-width: 100%;
 }
 
 header {
@@ -173,7 +192,6 @@ header .list li a {
 }
 
 .form .btn {
-	/*margin-top: 20px;*/
  	margin-top: 0px;
 }
 
@@ -279,6 +297,10 @@ header .list li a {
     border: solid 2px #8eabef;
     margin-right: 15px;
     cursor: pointer;
+}
+
+#post_list {
+    overflow: hidden;
 }
 
 #post_list li {
@@ -493,4 +515,108 @@ header .list li a {
 #filter_list li input {
     width: 100%;
     margin-top: 10px;
+}
+
+#postspin {
+    display: none;
+    width: 40px;
+    position: absolute;
+}
+
+.taxLis {
+    list-style: circle !important;
+    padding-left: 20px;
+}
+
+.taxLis li {
+    margin: 5px 0px;
+    font-size: 18px;
+}
+
+#posts_search {
+    display: inline-block;
+    padding: 5px;
+    width: 300px;
+    float: left;
+}
+
+#add_collection_post {
+    display: inline-block;
+    padding: 0px 10px;
+    font-size: 24px;
+    font-weight: bold;
+    background: #616161;
+    vertical-align: top;
+    color: #fff;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+#add_collection_post:hover {
+    background: #000;
+}
+
+#collectionPostList li {
+    padding: 10px;
+}
+
+#collectionPostList li .delBtn {
+    background: #616161;
+    padding: 0px 10px;
+    font-weight: bold;
+    margin-right: 15px;
+    color: #fff;
+    cursor: pointer;
+}
+
+.collectionPostsCont .awesomplete ul {
+   /*margin-top: 42px !important;*/
+    margin-top: 33px !important;
+}
+
+.collectionPostsCont .awesomplete {
+    display: inline-block !important;
+}
+
+.collectionPostsCont .awesomplete ul {
+    display: inline-block !important;
+    width: auto;
+}
+
+.collectionPostsCont .awesomplete ul li {
+    display: inline-block !important;
+    width: 100% !important;
+}
+
+#collectionList {
+    margin-top: 20px;
+}
+
+#collection_list li {
+    display: inline-block;
+    width: 20%;
+    padding-right: 10px;
+}
+
+#collection_list li label {
+    width: 100%;
+    text-align: center;
+}
+
+#post_list .delBtn {
+    background: #000;
+    color: #fff;
+    width: 20px;
+    display: inline-block;
+    height: 20px;
+    text-align: center;
+    border-radius: 100%;
+    margin-bottom: 10px;
+    float: right;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.main_section .description {
+    margin-top: 20px;
 }

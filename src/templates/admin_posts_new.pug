@@ -15,6 +15,13 @@ block content
 						h3 Slug
 						input(type="text", id="q_slug")
 					li
+						h3 Collections
+						ul.list#collection_list
+							each collection in collections
+								li
+									input(type="checkbox", value=`${collection.name}`)
+									label #{collection.name}
+					li
 						h3 Post Body
 						.toggleBox
 							label Use Content Blocks?
@@ -61,7 +68,7 @@ block content
 				ul.list.categories#industry_list
 					each industry in industries
 						li
-							input(type="checkbox", value=`${industry._id}`)
+							input(type="checkbox", value=`${industry.name}`)
 							label #{industry.name}
 							ul.list
 								li
@@ -81,7 +88,7 @@ block content
 				ul.list.categories#outcome_list
 					each outcome in outcomes
 						li
-							input(type="checkbox", value=`${outcome._id}`)
+							input(type="checkbox", value=`${outcome.name}`)
 							label #{outcome.name}
 							ul.list
 								li
@@ -101,7 +108,7 @@ block content
 				ul.list.categories#element_list
 					each element in elements
 						li
-							input(type="checkbox", value=`${element._id}`)
+							input(type="checkbox", value=`${element.name}`)
 							label #{element.name}
 							ul.list
 								li
@@ -121,7 +128,7 @@ block content
 				ul.list.categories#publisher_list
 					each publisher in publishers
 						li
-							input(type="checkbox", value=`${publisher._id}`)
+							input(type="checkbox", value=`${publisher.name}`)
 							label #{publisher.name}
 							ul.list
 								li

@@ -4,6 +4,7 @@ var api = express.Router();
 var bcrypt = require('bcryptjs');
 var User = require('../models/user');
 var Post = require('../models/post');
+var Collection = require('../models/collection');
 // var Category = require('../models/category');
 var Industry = require('../models/industry');
 var Outcome = require('../models/outcome');
@@ -43,6 +44,7 @@ api.post('/add_post', mid.requiresLogin, function(req, res, next){
                     outcomes: JSON.parse(req.body.outcomes),
                     elements: JSON.parse(req.body.elements),
                     publishers: JSON.parse(req.body.publishers),
+                    collections: JSON.parse(req.body.collections),
 					feat_img: req.body.feat_img,
 					user_id: req.body.user_id
                 }
@@ -97,20 +99,20 @@ api.post('/update_post', mid.requiresLogin, function(req, res, next){
                 outcomes: JSON.parse(req.body.outcomes),
                 elements: JSON.parse(req.body.elements),
                 publishers: JSON.parse(req.body.publishers),
+                collections: JSON.parse(req.body.collections),
                 feat_img: req.body.feat_img
               }
             },
             function(err, affected, resp){
-              if(err){
-                data.error = err;
-                res.send(data);
-              }else{
-                // console.log(affected);
-                data.success = '1';
-                res.send(data);
-              }
-            }
-          );
+                if(err){
+                    data.error = err;
+                    res.send(data);
+                }else{
+                    // console.log(affected);
+                    data.success = '1';
+                    res.send(data);
+                }
+            });
         
         }else{
           res.send('error');
@@ -399,6 +401,24 @@ api.post('/delete', mid.requiresLogin, function(req, res, next){
                             });
 
                         break;
+                        case 'collection':
+
+                            Collection.remove({ "_id" : req.body.itemid }, function(err, removed){
+                                data.removed = removed;
+                                if(err){
+                                    data.error = err;
+                                    res.send(data);
+                                }else{
+
+                                    if(removed){
+                                        data.success = '1';
+                                    }
+                                    
+                                    res.send(data);
+                                }
+                            });
+
+                        break;
                         case 'user':
 
                             User.findById({ "_id" : req.body.itemid }, function(err, theUser){
@@ -469,7 +489,8 @@ api.post('/add_user', function(req, res, next){
               isadmin: req.body.isadmin,
               permissions: [{
                 manage_posts: permissions[0].checked,
-                manage_users: permissions[1].checked
+                manage_users: permissions[1].checked,
+                manage_collections: permissions[2].checked
               }]
             }
 
@@ -534,7 +555,8 @@ api.post('/update_user', mid.requiresLogin, function(req, res, next){
 		                    isadmin: req.body.isadmin,
 		                    permissions: [{
 				                manage_posts: permissions[0].checked,
-				                manage_users: permissions[1].checked
+				                manage_users: permissions[1].checked,
+                                manage_collections: permissions[2].checked
 			              	}]
 		                }
 		            };
@@ -561,7 +583,8 @@ api.post('/update_user', mid.requiresLogin, function(req, res, next){
 	                    isadmin: req.body.isadmin,
 	                    permissions: [{
 			                manage_posts: permissions[0].checked,
-			                manage_users: permissions[1].checked
+			                manage_users: permissions[1].checked,
+                            manage_collections: permissions[2].checked
 		              	}]
 	                }
 	            };
@@ -649,14 +672,164 @@ api.get('/get_industries', function(req, res, next){
 
     Industry.find({}).exec(function(err, industries){
 
-        // console.log(industries);
-
         if(err){
             res.send(err);
         }else{
             res.send(industries);
         }
 
+    });
+
+});
+
+api.get('/get_outcomes', function(req, res, next){
+
+    Outcome.find({}).exec(function(err, outcomes){
+
+        if(err){
+            res.send(err);
+        }else{
+            res.send(outcomes);
+        }
+
+    });
+
+});
+
+api.get('/get_elements', function(req, res, next){
+
+    Element.find({}).exec(function(err, elements){
+
+        if(err){
+            res.send(err);
+        }else{
+            res.send(elements);
+        }
+
+    });
+
+});
+
+api.get('/get_publishers', function(req, res, next){
+
+    Publisher.find({}).exec(function(err, publishers){
+
+        if(err){
+            res.send(err);
+        }else{
+            res.send(publishers);
+        }
+
+    });
+
+});
+
+api.get('/get_posts', function(req, res, next){
+
+    Post.find({}).exec(function(err, posts){
+
+        if(err){
+            res.send(err);
+        }else{
+            res.send(posts);
+        }
+
+    });
+
+});
+
+api.post('/filtered_posts', function(req, res, next){
+
+    const industry = req.body.industries;
+    const outcome = req.body.outcome;
+    const element = req.body.element;
+    const publisher = req.body.publisher;
+
+    let filterObj = {};
+
+    if(industry != ''){
+        filterObj.industries = industry;
+    }
+
+    if(outcome != ''){
+        filterObj.outcomes = outcome;
+    }
+
+    if(element != ''){
+        filterObj.elements = element;
+    }
+
+    if(publisher != ''){
+        filterObj.publishers = publisher;
+    }
+
+    console.log(filterObj);
+
+    Post.find(filterObj).exec(function(err, posts){
+
+        if(err){
+            res.send(err);
+        }else{
+            res.send(posts);
+        }
+
+    });
+
+});
+
+api.post('/add_collection', function(req, res, next){
+
+    let data = {};
+    data.success = '0';
+
+    // create obj with form input
+    var collectionData = {
+        name: req.body.name,
+        description: req.body.description
+        // posts: JSON.parse(req.body.posts)
+    }
+
+    // add to mongo db
+    Collection.create(collectionData, function(error, collection){
+        if( error ){
+            res.send(error);
+        }else{
+
+            data.success = '1';
+            res.send(data);
+
+        }
+    });
+
+});
+
+api.post('/update_collection', function(req, res, next){
+
+    let data = {};
+    data.success = '0';
+
+    const collectionid = req.body.collectionid;
+
+    Collection.update(
+    {
+      "_id": collectionid
+    }, 
+    {
+      $set: {
+        name: req.body.name,
+        description: req.body.description
+        // posts: JSON.parse(req.body.posts)
+      }
+    },
+    function(err, affected, resp){
+        if(err){
+            data.error = err;
+            res.send(data);
+        }else{
+            // console.log(affected);
+            data.success = '1';
+            res.send(data);
+        }
     });
 
 });
