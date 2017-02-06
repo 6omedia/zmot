@@ -10,6 +10,7 @@ var mid = require('../middleware');
 // Home
 
 main.get('/', function(req, res){
+  
     const path = req.path;
     res.locals.path = path;
 

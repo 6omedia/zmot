@@ -1,5 +1,9 @@
 
 var express = require('express');
+
+const aws = require('aws-sdk');
+const S3_BUCKET = process.env.S3_BUCKET;
+
 var api = express.Router();
 var bcrypt = require('bcryptjs');
 var User = require('../models/user');
@@ -629,36 +633,69 @@ api.post('/upload/:subfolder', mid.requiresLogin, function(req, res, next){
             let data = {};
             data.success = '0';
 
-            // create an incoming form object
-            var form = new formidable.IncomingForm();
+            const s3 = new aws.S3();
+            const fileName = req.query['file-name'];
+            const fileType = req.query['file-type'];
+            const s3Params = {
+                Bucket: S3_BUCKET,
+                Key: fileName,
+                Expires: 60,
+                ContentType: fileType,
+                ACL: 'public-read'
+            };
 
-            // specify that we want to allow the user to upload multiple files in a single request
-            form.multiples = true;
+            s3.getSignedUrl('putObject', s3Params, (err, data) => {
+                if(err){
+                  console.log(err);
+                  return res.end();
+                }
+                const returnData = {
+                  signedRequest: data,
+                  url: `https://${S3_BUCKET}.s3.amazonaws.com/${fileName}`
+                };
 
-            // store all uploads in the /uploads directory
-            form.uploadDir = path.join(__dirname, '../public/uploads/' + subFolder);
-
-            // every time a file has been uploaded successfully,
-            // rename it to it's orignal name
-            form.on('file', function(field, file) {
-                fs.rename(file.path, path.join(form.uploadDir, file.name));
-                data.filename = file.name;
-            });
-
-            // log any errors that occur
-            form.on('error', function(err) {
-                console.log('An error has occured: \n' + err);
-                res.send('An error has occured: \n' + err);
-            });
-
-            // once all the files have been uploaded, send a response to the client
-            form.on('end', function() {
+                data.success = '1';
                 res.send(data);
-                res.end('success');
+
+                // res.write(JSON.stringify(returnData));
+                // res.end();
             });
 
-            // parse the incoming request containing the form data
-            form.parse(req);
+
+
+            // let data = {};
+            // data.success = '0';
+
+            // // create an incoming form object
+            // var form = new formidable.IncomingForm();
+
+            // // specify that we want to allow the user to upload multiple files in a single request
+            // form.multiples = true;
+
+            // // store all uploads in the /uploads directory
+            // form.uploadDir = path.join(__dirname, '../public/uploads/' + subFolder);
+
+            // // every time a file has been uploaded successfully,
+            // // rename it to it's orignal name
+            // form.on('file', function(field, file) {
+            //     fs.rename(file.path, path.join(form.uploadDir, file.name));
+            //     data.filename = file.name;
+            // });
+
+            // // log any errors that occur
+            // form.on('error', function(err) {
+            //     console.log('An error has occured: \n' + err);
+            //     res.send('An error has occured: \n' + err);
+            // });
+
+            // // once all the files have been uploaded, send a response to the client
+            // form.on('end', function() {
+            //     res.send(data);
+            //     res.end('success');
+            // });
+
+            // // parse the incoming request containing the form data
+            // form.parse(req);
         
         }else{
           res.send('error');
