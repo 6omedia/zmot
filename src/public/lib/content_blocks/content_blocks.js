@@ -77,9 +77,9 @@
 			});
 
 			uploader.fileInput.on('change', function(){
-				uploader.uploadFiles(function(data){
+				uploader.uploadFile(function(filename){
 
-					img.attr('src', '/static/uploads/posts/' + data.filename).show();
+					img.attr('src', 'https://6omedia.s3.amazonaws.com/' + filename).show();
 
 				});
 			});

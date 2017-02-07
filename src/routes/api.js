@@ -2,6 +2,7 @@
 var express = require('express');
 
 const aws = require('aws-sdk');
+// const aws = require('aws4');
 const S3_BUCKET = process.env.S3_BUCKET;
 
 var api = express.Router();
@@ -618,92 +619,114 @@ api.post('/update_user', mid.requiresLogin, function(req, res, next){
 
 // Image uploads
 
-api.post('/upload/:subfolder', mid.requiresLogin, function(req, res, next){
+api.post('/generate_url', mid.requiresLogin, function(req, res, next){
 
-    const subFolder = req.params.subfolder;
+    User.findById(req.session.userId)
+        .exec(function(error, user){
+            if(error){
+                next(error);
+            }else{
+                // check if admin
+                if(user.isadmin){
 
-  User.findById(req.session.userId)
-    .exec(function(error, user){
-      if(error){
-        next(error);
-      }else{
-        // check if admin
-        if(user.isadmin){
+                    let data = {};
+                    data.success = '0';
 
-            let data = {};
-            data.success = '0';
+                    const imgName = req.body.imgName;
 
-            const s3 = new aws.S3();
-            const fileName = req.query['file-name'];
-            const fileType = req.query['file-type'];
-            const s3Params = {
-                Bucket: S3_BUCKET,
-                Key: fileName,
-                Expires: 60,
-                ContentType: fileType,
-                ACL: 'public-read'
-            };
+                    var s3 = new aws.S3({
+                      accessKeyId: 'AKIAJIPJTSNUUCMIMKKQ',
+                      secretAccessKey: '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',
+                      region: 'eu-west-2',
+                      signatureVersion: 'v4'
+                    });
 
-            s3.getSignedUrl('putObject', s3Params, (err, data) => {
-                if(err){
-                  console.log(err);
-                  return res.end();
+                    var uploadPreSignedUrl = s3.getSignedUrl('putObject', {
+                        Bucket: '6omedia',
+                        Key: imgName,
+                        ACL: 'authenticated-read',
+                        ContentType: 'binary/octet-stream'
+                        /* then add all the rest of your parameters to AWS puttObect here */
+                    });
+
+                    var downloadPreSignedUrl = s3.getSignedUrl('getObject', {
+                        Bucket: '6omedia',
+                        Key: imgName,
+                        /* set a fixed type, or calculate your mime type from the file extension */
+                        ResponseContentType: 'image/jpeg'
+                        /* and all the rest of your parameters to AWS getObect here */
+                    });
+
+                    data.uploadPreSignedUrl = uploadPreSignedUrl;
+
+                    res.send(data);
+
+                }else{
+                    res.send('error');
                 }
-                const returnData = {
-                  signedRequest: data,
-                  url: `https://${S3_BUCKET}.s3.amazonaws.com/${fileName}`
-                };
-
-                data.success = '1';
-                res.send(data);
-
-                // res.write(JSON.stringify(returnData));
-                // res.end();
-            });
-
-
-
-            // let data = {};
-            // data.success = '0';
-
-            // // create an incoming form object
-            // var form = new formidable.IncomingForm();
-
-            // // specify that we want to allow the user to upload multiple files in a single request
-            // form.multiples = true;
-
-            // // store all uploads in the /uploads directory
-            // form.uploadDir = path.join(__dirname, '../public/uploads/' + subFolder);
-
-            // // every time a file has been uploaded successfully,
-            // // rename it to it's orignal name
-            // form.on('file', function(field, file) {
-            //     fs.rename(file.path, path.join(form.uploadDir, file.name));
-            //     data.filename = file.name;
-            // });
-
-            // // log any errors that occur
-            // form.on('error', function(err) {
-            //     console.log('An error has occured: \n' + err);
-            //     res.send('An error has occured: \n' + err);
-            // });
-
-            // // once all the files have been uploaded, send a response to the client
-            // form.on('end', function() {
-            //     res.send(data);
-            //     res.end('success');
-            // });
-
-            // // parse the incoming request containing the form data
-            // form.parse(req);
-        
-        }else{
-          res.send('error');
-        }
-
-      }
-    });
+            }
+        });
 });
+
+// api.post('/upload/:subfolder', mid.requiresLogin, function(req, res, next){
+
+//     const subFolder = req.params.subfolder;
+
+//   User.findById(req.session.userId)
+//     .exec(function(error, user){
+//       if(error){
+//         next(error);
+//       }else{
+//         // check if admin
+//         if(user.isadmin){
+
+//             let data = {};
+//             data.success = '0';
+
+           
+//             // now you have both urls
+//             console.log( uploadPreSignedUrl, downloadPreSignedUrl ); 
+         
+//             res.send(data);
+
+//             // create an incoming form object
+//             // var form = new formidable.IncomingForm();
+
+//             // // specify that we want to allow the user to upload multiple files in a single request
+//             // form.multiples = true;
+
+//             // // store all uploads in the /uploads directory
+//             // form.uploadDir = path.join(__dirname, '../public/uploads/' + subFolder);
+
+//             // // every time a file has been uploaded successfully,
+//             // // rename it to it's orignal name
+//             // form.on('file', function(field, file) {
+//             //     fs.rename(file.path, path.join(form.uploadDir, file.name));
+//             //     data.filename = file.name;
+//             // });
+
+//             // // log any errors that occur
+//             // form.on('error', function(err) {
+//             //     console.log('An error has occured: \n' + err);
+//             //     res.send('An error has occured: \n' + err);
+//             // });
+
+//             // // once all the files have been uploaded, send a response to the client
+//             // form.on('end', function() {
+//             //     res.send(data);
+//             //     res.end('success');
+//             // });
+
+//             // // parse the incoming request containing the form data
+//             // form.parse(req);
+        
+//         }else{
+//           res.send('error');
+//         }
+
+//       }
+//     });
+// });
 
 api.get('/get_industries', function(req, res, next){
 

@@ -423,12 +423,10 @@ const publisher = new Taxonomy('publisher', publisherForm, $('#publisher_list'))
 
 
 
-
-
-
 function displayUploadedImg(imgLink){
 
-	const imgTag = '<img src="/static/uploads/posts/' + imgLink + '">';
+	const imgTag = '<img src="https://6omedia.s3.amazonaws.com/' + imgLink + '">';
+	// const imgTag = '';
 	$('#featImg_container').append(imgTag);
 	$('#featImg_container > p').remove();
 	$('#upload_box').hide();
@@ -442,8 +440,8 @@ imgUploader.fileInput.on('click', function(){
 });
 
 imgUploader.uploadBtn.on('click', function(){
-	imgUploader.uploadFiles(function(data){
-		displayUploadedImg(data.filename);
+	imgUploader.uploadFile(function(filename){
+		displayUploadedImg(filename);
 	});
 });
 
