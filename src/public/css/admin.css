@@ -128,7 +128,8 @@ header .list li a {
 }
 
 .side_section {
-	width: 300px;
+	/*width: 300px;*/
+    width: 15%;
     min-height: 1000px;
     float: left;
     background: #334369;
@@ -144,7 +145,8 @@ header .list li a {
     padding: 70px 40px 40px 40px;
 	float: right;
 	background: #fff;
-	width: calc(100% - 300px);
+	/*width: calc(100% - 300px);*/
+    width: 85%;
 	min-height: 1000px;
 }
 
