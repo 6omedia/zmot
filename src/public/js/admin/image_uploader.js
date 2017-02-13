@@ -105,76 +105,11 @@ class ImageUploader {
 
 	}
 
-	// uploadFiles(successFunc){
-
-	// 	var files = this.fileInput.get(0).files;
-
-	// 	let progThis = this;
-
-	// 	if (files.length > 0){
-
-	// 		// var formData = new FormData();
-
-	// 		// for (var i = 0; i < files.length; i++) {
-	//   // 			var file = files[i];
-	// 		//   	formData.append('uploads[]', file, file.name);
-	// 		// }
-
-	// 		var theFormFile = $('#upload-input').get()[0].files[0];
-
-	// 		// eu-west-2
-	// 		// http://s3-eu-west-2.amazonaws.com/6omedia
-
-	// 		$.ajax({
-	// 			// url: '/admin/api/upload/' + this.subFolder,
-	// 			url: '/admin/api/upload/posts',
-	// 			type: 'PUT',
-	// 			data: theFormFile,
-	// 			processData: false,
-	// 			contentType: 'binary/octet-stream',
-	// 			success: function(data){
-					
-	// 				successFunc(data);
-
-	// 			},
-	// 			xhr: function() {
-	// 		        // create an XMLHttpRequest
-	// 		        var xhr = new XMLHttpRequest();
-
-	// 		        // listen to the 'progress' event
-	// 		        xhr.upload.addEventListener('progress', function(evt) {
-
-	// 		          if (evt.lengthComputable) {
-	// 		            // calculate the percentage of upload completed
-	// 		            var percentComplete = evt.loaded / evt.total;
-	// 		            percentComplete = parseInt(percentComplete * 100);
-
-	// 		            // update the Bootstrap progress bar with the new percentage
-	// 		            progThis.progBar.text(percentComplete + '%');
-	// 		            progThis.progBar.width(percentComplete + '%');
-
-	// 		            // once the upload reaches 100%, set the progress bar text to done
-	// 		            if (percentComplete === 100) {
-	// 		            	progThis.progBar.html('Done');
-	// 		            }
-
-	// 		          }
-
-	// 		        }, false);
-
-	// 		        return xhr;
-	// 			}
-	// 		});
-
-	// 	}
-	// }
-
 	constructor(fileInput, uploadBtn, progBar, subFolder){
 		this.fileInput = fileInput;
 		this.uploadBtn = uploadBtn;
 		this.progBar = progBar;
 		this.subFolder = subFolder;
-		// console.log('fileInput: ', fileInput);
 	}
 
 }

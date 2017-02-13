@@ -3,7 +3,10 @@ var express = require('express');
 
 const aws = require('aws-sdk');
 // const aws = require('aws4');
-const S3_BUCKET = process.env.S3_BUCKET;
+const S3_BUCKET = process.env.S3_BUCKET_NAME;
+// const S3_BUCKET = process.env.S3_BUCKET;
+const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
+const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
 
 var api = express.Router();
 var bcrypt = require('bcryptjs');
@@ -635,14 +638,14 @@ api.post('/generate_url', mid.requiresLogin, function(req, res, next){
                     const imgName = req.body.imgName;
 
                     var s3 = new aws.S3({
-                      accessKeyId: 'AKIAJIPJTSNUUCMIMKKQ',
-                      secretAccessKey: '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',
+                      accessKeyId: accessKeyId,
+                      secretAccessKey: secretAccessKey,
                       region: 'eu-west-2',
                       signatureVersion: 'v4'
                     });
 
                     var uploadPreSignedUrl = s3.getSignedUrl('putObject', {
-                        Bucket: '6omedia',
+                        Bucket: S3_BUCKET,
                         Key: imgName,
                         ACL: 'authenticated-read',
                         ContentType: 'binary/octet-stream'
@@ -650,7 +653,7 @@ api.post('/generate_url', mid.requiresLogin, function(req, res, next){
                     });
 
                     var downloadPreSignedUrl = s3.getSignedUrl('getObject', {
-                        Bucket: '6omedia',
+                        Bucket: S3_BUCKET,
                         Key: imgName,
                         /* set a fixed type, or calculate your mime type from the file extension */
                         ResponseContentType: 'image/jpeg'
